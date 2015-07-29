@@ -12,7 +12,8 @@
                                                      'spree/openpay/gateway_options',
                                                      view_path: File.expand_path('app/views', SpreeOpenpayGateway::Engine.root),
                                                      format: :json).html_safe %>');
-            spreeOpenpay = new OpenPay($('#checkout_form_payment'), gatewayOptions);
+
+            spreeOpenpay = new Spree.Openpay($('#checkout_form_payment'), gatewayOptions);
         });
     </script>
 <% end %>

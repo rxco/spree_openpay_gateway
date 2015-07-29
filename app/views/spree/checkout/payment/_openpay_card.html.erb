@@ -109,15 +109,15 @@
 
     var deviceSessionId = OpenPay.deviceData.setup("checkout_form_payment", "deviceIdHiddenFieldName");
 
-    SpreeOpenpay.initClient('<%= payment_method.preferred_merchant_id -%>', 
+    Spree.Openpay.configureAPI_Client('<%= payment_method.preferred_merchant_id -%>', 
                                 '<%= payment_method.preferred_auth_token -%>',
                                 <%= payment_method.preferred_test_mode -%>);    
   });
 
-  $('#checkout_form_payment').on('submit', function(event) {
+  /*$('#checkout_form_payment').on('submit', function(event) {
      event.preventDefault();
      $("#pay-button").prop( "disabled", true);
-     OpenPay.token.extractFormAndCreate('checkout_form_payment', SpreeOpenpay.success_callbak, SpreeOpenpay.error_callbak);                
-  });
+     OpenPay.token.extractFormAndCreate('checkout_form_payment', spreeOpenpay.success_callbak, spreeOpenpay.error_callbak);                
+  });*/
 
 </script>
