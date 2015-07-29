@@ -1,3 +1,5 @@
 Spree::Core::Engine.routes.draw do
-  # Add your extension routes here
+  namespace :openpay do
+    resources :payments, only: [:create, :show]
+  end
 end

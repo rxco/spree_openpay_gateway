@@ -1,74 +1,123 @@
-<%= image_tag 'credit_cards/credit_card.gif', :id => 'credit-card-image' %>
+<!-- step 1 -->
 <% param_prefix = "payment_source[#{payment_method.id}]" %>
+<!--form action="#" method="POST" id="openpay-payment-form"-->
+<input type="hidden" name="token_id" id="token_id">
+<div class="pymnt-itm card active well clearfix">
+      
+      
+  <h2>Tarjeta de crédito o débito</h2>
 
+  <div class="pymnt-cntnt">
+    <div class="card-expl">
+        <div class="credit"><h4>Tarjetas de crédito</h4></div>
+        <div class="debit"><h4>Tarjetas de débito</h4></div>
+    </div>
+    <%= image_tag 'credit_cards/credit_card.gif', :id => 'credit-card-image' %>
+    <div class="sctn-row">
+      <div class="sctn-col l field">
+          <%= label_tag "name_on_card_#{payment_method.id}", Spree.t(:name_on_card) %><span class="required">*</span><br />
+          <!--input type="text" name="holder" placeholder="Como aparece en la tarjeta" autocomplete="off" data-openpay-card="holder_name" class="form-control"-->
+          <%= text_field_tag "#{param_prefix}[name_on_card]", 
+              "#{@order.billing_firstname} #{@order.billing_lastname}",
+              { :id => "name_on_card_#{payment_method.id}", :class => "form-control", :data => { :"openpay-card" => 'holder_name' }} %>
 
-<p class="field">
-  <%= label_tag "name_on_card_#{payment_method.id}", Spree.t(:name_on_card) %><span class="required">*</span><br />
-  <%= text_field_tag "#{param_prefix}[name_on_card]",
-                     "#{@order.billing_firstname} #{@order.billing_lastname}",
-                     { :id => "name_on_card_#{payment_method.id}", data: { openpay: 'card[name]' } } %>
-</p>
+      </div>
+      <div class="sctn-col field">
+        <% options_hash = Rails.env.production? ? {:autocomplete => 'off'} : {} %>
+        <%= label_tag "card_number", Spree.t(:card_number) %><span class="required">*</span><br />
+          <!--input type="text" name="card" autocomplete="off" data-openpay-card="card_number" class="form-control"></div-->
+        <%= text_field_tag "#{param_prefix}[number]",
+           '',
+           options_hash.merge(:id => 'card_number',
+                              :class => 'form-control',
+                              :size => 19,
+                              :maxlength => 19,
+                              :autocomplete => "off",
+                              :data => { :"openpay-card" => 'card_number' }) %>
+            &nbsp;
+        <span id="card_type" style="display:none;">
+            ( <span id="looks_like" ><%= Spree.t(:card_type_is) %> <span id="type"></span></span>
+              <span id="unrecognized"><%= Spree.t(:unrecognized_card_type) %></span>
+              )
+        </span>
+      </div>
 
-<p class="field" data-hook="card_number">
-  <%= label_tag "card_number", Spree.t(:card_number) %><span class="required">*</span><br />
-  <% options_hash = Rails.env.production? ? {:autocomplete => 'off'} : {} %>
-  <%= text_field_tag "#{param_prefix}[number]",
-                     '',
-                     options_hash.merge(:id => 'card_number',
-                                        :class => 'required',
-                                        :size => 19,
-                                        :maxlength => 19,
-                                        :autocomplete => "off",
-                                        :data => { openpay: 'card[number]' }) %>
-  &nbsp;
-  <span id="card_type" style="display:none;">
-    ( <span id="looks_like" ><%= Spree.t(:card_type_is) %> <span id="type"></span></span>
-      <span id="unrecognized"><%= Spree.t(:unrecognized_card_type) %></span>
-    )
-  </span>
-</p>
+      <% if payment_method.with_installments? %>
+        <p class="field">
+          <%= label_tag "installments_number_#{payment_method.id}", Spree.t(:installments_number) %>
+          <%= select_tag "#{param_prefix}[installments_number]", options_for_select([6,12], 6), data: { openpay: 'monthly_installments' } %>
+        </p>
+      <% end %>
 
-<p class="field" data-hook="card_expiration">
-  <%= label_tag "card_month", Spree.t(:expiration) %><span class="required">*</span><br />
-  <%= select_month(Date.today,
-                   { :prefix => param_prefix, :field_name => 'month', :use_month_numbers => true },
-                   :class => 'required',
-                   :id => "card_month",
-                   :data => { openpay: 'card[exp_month]' }) %>
-
-  <%= select_year(Date.today,
-                  { :prefix => param_prefix, :field_name => 'year', :start_year => Date.today.year, :end_year => Date.today.year + 15 },
+      <div class="sctn-row">
+        <div class="sctn-col l">
+          <%= label_tag "card_month", Spree.t(:expiration) %><span class="required">*</span><br />
+          <div class="sctn-col half l">
+                      
+          <!--input type="text" name="month" placeholder="Mes" data-openpay-card="expiration_month"></div-->
+          <%= select_month(Date.today,
+                 { :prefix => param_prefix, :field_name => 'month', :use_two_digit_numbers => true },
+                 :class => 'form-control',
+                 :id => "card_month",
+                 :data => { :"openpay-card" =>  'expiration_month' }) %>
+                    
+          <div class="sctn-col half l">
+            <!--input type="text" name="year" placeholder="Año" data-openpay-card="expiration_year"/-->
+            <%#= select_year((Date.today + 1.year),
+                  { :prefix => param_prefix, :field_name => 'year', :start_year => Date.today.year, :end_year => Date.today.year + 15 , :use_two_digit_numbers => true},
                   :class => 'required',
                   :id => "card_year",
-                  :data => { openpay: 'card[exp_year]' }) %>
-</p>
+                  :data => { :"openpay-card" => 'expiration_year' }) %>
 
-<p class="field" data-hook="card_code">
-  <%= label_tag "card_code", Spree.t(:card_code) %><span class="required">*</span><br />
-  <%= text_field_tag "#{param_prefix}[verification_value]",
+             <%= text_field_tag "#{param_prefix}[year]", 
+              "",
+              { :id => "card_year", :class => "form-control", :data => { :"openpay-card" => 'expiration_year' }} %>
+          </div>
+
+          </div>
+          <div class="sctn-col cvv"><label>Código de seguridad</label>
+            <div class="sctn-col half l">
+              <!--input type="text" name="cvv" placeholder="3 dígitos" autocomplete="off" data-openpay-card="cvv2"-->
+              <%= text_field_tag "#{param_prefix}[verification_value]",
                      '',
                      options_hash.merge(:id => 'card_code',
                                         :class => 'required',
-                                        :size => 5,
-                                        :data => { openpay: 'card[cvc]' }) %>
-  <%= link_to "(#{Spree.t(:what_is_this)})", spree.content_path('cvv'), :target => '_blank', "data-hook" => "cvv_link", :id => "cvv_link" %>
-</p>
-
-<% if payment_method.with_installments? %>
-  <p class="field">
-    <%= label_tag "installments_number_#{payment_method.id}", Spree.t(:installments_number) %>
-    <%= select_tag "#{param_prefix}[installments_number]", options_for_select([6,12], 6), data: { openpay: 'monthly_installments' } %>
-  </p>
-<% end %>
-
-<%= hidden_field_tag "openpay_month", Date.today.month, :data => { openpay: 'card[exp_month]' } %>
-<%= hidden_field_tag "openpay_year", Date.today.year, :data => { openpay: 'card[exp_year]' } %>
+                                        :size => 4,
+                                        :maxlength => 4,
+                                        :data => { :"openpay-card"=> 'cvv2' }) %>
+              <%= link_to "(#{Spree.t(:what_is_this)})", spree.content_path('cvv'), :target => '_blank', "data-hook" => "cvv_link", :id => "cvv_link" %>
+            </div>
+          </div>
+        </div>
+        <div class="openpay">
+          <div class="logo">Transacciones realizadas vía:</div>
+          <div class="shield">Tus pagos se realizan de forma segura con encriptación de 256 bits</div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
 
 <%= hidden_field_tag "#{param_prefix}[openpay_response]", '' %>
 <%= hidden_field_tag "#{param_prefix}[gateway_payment_profile_id]", '', :id => "gateway_payment_profile_id" %>
-
+<!--/form-->
+<!-- step 1 -->
 <script type="text/javascript">
-    $(function() {
-        Openpay.setPublishableKey('<%= payment_method.preferred_auth_token -%>');
-    });
+  
+  $(document).ready(function() {
+
+    var deviceSessionId = OpenPay.deviceData.setup("checkout_form_payment", "deviceIdHiddenFieldName");
+
+    SpreeOpenpay.initClient('<%= payment_method.preferred_merchant_id -%>', 
+                                '<%= payment_method.preferred_auth_token -%>',
+                                <%= payment_method.preferred_test_mode -%>);    
+  });
+
+  $('#checkout_form_payment').on('submit', function(event) {
+     event.preventDefault();
+     $("#pay-button").prop( "disabled", true);
+     OpenPay.token.extractFormAndCreate('checkout_form_payment', SpreeOpenpay.success_callbak, SpreeOpenpay.error_callbak);                
+  });
+
 </script>

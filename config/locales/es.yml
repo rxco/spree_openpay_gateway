@@ -1,6 +1,6 @@
 
-es-MX:
-  conekta:
+es:
+  openpay:
     additional_steps_warning: Pasos adicionales para completar su pago
     card:
       processing_order: Procesando su pago espere un momento
@@ -19,3 +19,5 @@ es-MX:
     order_number: 'Número de orden: %{number}'
     print_payment_form: Imprimir ficha de pago
     total: 'Total a pagar:'
+  spree:
+    order_already_updated: Orden ya ha sido actualizada

@@ -1,5 +1,6 @@
 <% unless Rails.env.test? %>
     <script type="text/javascript">
+
         $(function() {
             $('#card_month').on('change', function(e){
                 $('#openpay_month').val($(this).val());
@@ -11,7 +12,7 @@
                                                      'spree/openpay/gateway_options',
                                                      view_path: File.expand_path('app/views', SpreeOpenpayGateway::Engine.root),
                                                      format: :json).html_safe %>');
-            spreeOpenpay = new Openpay($('#checkout_form_payment'), gatewayOptions);
+            spreeOpenpay = new OpenPay($('#checkout_form_payment'), gatewayOptions);
         });
     </script>
 <% end %>

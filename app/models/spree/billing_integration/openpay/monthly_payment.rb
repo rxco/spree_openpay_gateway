@@ -1,6 +1,7 @@
 module Spree
   class BillingIntegration::Openpay::MonthlyPayment < Gateway
     preference :auth_token, :string
+    preference :merchant_id, :string
 
     unless Rails::VERSION::MAJOR == 4
       attr_accessible :preferred_auth_token

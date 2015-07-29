@@ -1,5 +1,6 @@
 module Spree
   class BillingIntegration::Openpay::Card < Gateway
+    preference :merchant_id, :string
     preference :auth_token, :string
     preference :source_method, :string, default: 'card'
 
