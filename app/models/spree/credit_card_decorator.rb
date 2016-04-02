@@ -6,10 +6,10 @@ Spree::CreditCard.class_eval do
   end
 
   def name?
-    !!name_on_card | (first_name? & last_name?)
+    !!name_on_card | (name? )
   end
 
   def name
-    name_on_card || "#{first_name} #{last_name}"
+    name_on_card || "#{name}"
   end
 end
