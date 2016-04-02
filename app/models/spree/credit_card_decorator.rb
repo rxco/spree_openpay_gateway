@@ -6,7 +6,7 @@ Spree::CreditCard.class_eval do
   end
 
   def name?
-    !!name_on_card | (name? )
+    !!name_on_card | (name?)
   end
 
   def name
