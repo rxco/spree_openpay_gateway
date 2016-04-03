@@ -5,12 +5,14 @@ Spree::CreditCard.class_eval do
     attr_accessible :name_on_card, :installments_number, :openpay_response
   end
 
-  def name?
+  #
+  #def name?
     #!!name_on_card | (first_name? & last_name?)
-    name_on_card
-  end
+   # name_on_card
+  #end
 
-  def name
-    name_on_card #|| "#{first_name} #{last_name}"
-  end
+  #def name
+   # name_on_card #|| "#{first_name} #{last_name}"
+  #end
+
 end
