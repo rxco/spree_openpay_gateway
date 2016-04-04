@@ -27,5 +27,6 @@ Spree::CheckoutController.class_eval do
 
     def permit_openpay_response
       permitted_source_attributes << :openpay_response
+       permitted_source_attributes << :payment_method_id
     end
 end
